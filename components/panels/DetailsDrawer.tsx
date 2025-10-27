@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useMapStore } from "@/lib/store/mapStore";
@@ -40,11 +41,24 @@ export function DetailsDrawer() {
                 <h3 className="text-sm font-semibold uppercase text-muted-foreground">Media</h3>
                 <div className="grid grid-cols-2 gap-3">
                   {data.media.map((url: string) => (
-                    <a key={url} href={url} target="_blank" rel="noopener noreferrer" className="group relative overflow-hidden rounded-md">
+                    <a
+                      key={url}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative block h-32 w-full overflow-hidden rounded-md"
+                    >
                       <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-xs text-white opacity-0 transition group-hover:opacity-100">
                         View
                       </span>
-                      <img src={url} alt="Incident media" className="h-32 w-full object-cover" />
+                      <Image
+                        src={url}
+                        alt="Incident media"
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover"
+                        unoptimized
+                      />
                     </a>
                   ))}
                 </div>

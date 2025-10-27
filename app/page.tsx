@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,7 +40,14 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="overflow-hidden rounded-3xl border bg-white shadow-lg">
-          <img src="/hero-placeholder.svg" alt="CitySen map preview" className="w-full" />
+          <Image
+            src="/hero-placeholder.svg"
+            alt="CitySen map preview"
+            width={1200}
+            height={720}
+            className="h-auto w-full"
+            priority
+          />
         </div>
       </header>
       <main id="features" className="mx-auto max-w-6xl space-y-12 px-6 pb-24">
