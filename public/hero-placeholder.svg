@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" fill="none">
+  <rect width="1200" height="720" rx="48" fill="#E0F2FE" />
+  <path d="M0 480L160 400C320 320 640 160 800 160C960 160 1120 240 1200 280V720H0V480Z" fill="#38BDF8" fill-opacity="0.35" />
+  <path d="M0 560L200 520C400 480 800 400 1000 400C1200 400 1200 400 1200 400V720H0V560Z" fill="#0EA5E9" fill-opacity="0.25" />
+  <circle cx="280" cy="240" r="32" fill="#0EA5E9" />
+  <circle cx="420" cy="360" r="24" fill="#0EA5E9" />
+  <circle cx="640" cy="280" r="28" fill="#0369A1" />
+  <circle cx="860" cy="220" r="20" fill="#0369A1" />
+  <circle cx="980" cy="320" r="18" fill="#0EA5E9" />
+  <text x="50%" y="55%" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="600" font-size="48" fill="#0369A1">CitySen Map Preview</text>
+</svg>
