@@ -1,6 +1,6 @@
-import { useShallow } from "zustand/react/shallow";
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
 import { useEffect } from "react";
 import { useUrlState } from "@/lib/useUrlState";
 import { useMapStore } from "@/lib/store/mapStore";
