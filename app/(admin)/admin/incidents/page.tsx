@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import type { Prisma } from "@prisma/client";
 
 export default async function AdminIncidentsPage() {
   const session = await getServerSession(authOptions);
@@ -11,18 +10,33 @@ export default async function AdminIncidentsPage() {
     redirect("/api/auth/signin");
   }
 
-  let incidents: Prisma.IncidentGetPayload<{ include: { category: true } }>[] = [];
+  let incidents: Awaited<ReturnType<typeof prisma.incident.findMany>> = [];
+  const categoryNameById = new Map<string, string>();
   let loadError = false;
 
-  try {
-    incidents = await prisma.incident.findMany({
+  const [incidentsResult, categoriesResult] = await Promise.allSettled([
+    prisma.incident.findMany({
       take: 20,
-      orderBy: { reportedAt: "desc" },
-      include: { category: true }
-    });
-  } catch (error) {
-    console.error("Failed to load incidents:", error);
+      orderBy: { reportedAt: "desc" }
+    }),
+    prisma.category.findMany({
+      select: { id: true, name: true }
+    })
+  ]);
+
+  if (incidentsResult.status === "fulfilled") {
+    incidents = incidentsResult.value;
+  } else {
+    console.error("Failed to load incidents:", incidentsResult.reason);
     loadError = true;
+  }
+
+  if (categoriesResult.status === "fulfilled") {
+    for (const category of categoriesResult.value) {
+      categoryNameById.set(category.id, category.name);
+    }
+  } else {
+    console.error("Failed to load categories:", categoriesResult.reason);
   }
 
   return (
@@ -53,7 +67,7 @@ export default async function AdminIncidentsPage() {
               {incidents.map((incident) => (
                 <tr key={incident.id}>
                   <td className="px-4 py-2 font-medium">{incident.title}</td>
-                  <td className="px-4 py-2">{incident.category?.name ?? "Uncategorized"}</td>
+                  <td className="px-4 py-2">{categoryNameById.get(incident.categoryId) ?? "Uncategorized"}</td>
                   <td className="px-4 py-2">{incident.severity}</td>
                   <td className="px-4 py-2 capitalize">{incident.status.toLowerCase()}</td>
                   <td className="px-4 py-2">{incident.occurredAt.toLocaleString()}</td>
