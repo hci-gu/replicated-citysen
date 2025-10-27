@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import type { Prisma } from "@prisma/client";
 
 export default async function AdminIncidentsPage() {
   const session = await getServerSession(authOptions);
@@ -10,7 +11,7 @@ export default async function AdminIncidentsPage() {
     redirect("/api/auth/signin");
   }
 
-  let incidents: Awaited<ReturnType<typeof prisma.incident.findMany>> = [];
+  let incidents: Prisma.IncidentGetPayload<{ include: { category: true } }>[] = [];
   let loadError = false;
 
   try {
@@ -52,7 +53,7 @@ export default async function AdminIncidentsPage() {
               {incidents.map((incident) => (
                 <tr key={incident.id}>
                   <td className="px-4 py-2 font-medium">{incident.title}</td>
-                  <td className="px-4 py-2">{incident.category.name}</td>
+                  <td className="px-4 py-2">{incident.category?.name ?? "Uncategorized"}</td>
                   <td className="px-4 py-2">{incident.severity}</td>
                   <td className="px-4 py-2 capitalize">{incident.status.toLowerCase()}</td>
                   <td className="px-4 py-2">{incident.occurredAt.toLocaleString()}</td>
