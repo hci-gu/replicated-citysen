@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import { ensureDatabaseUrl } from "../lib/ensureDatabaseUrl.js";
 
 function runCommand(command, label) {
   console.log(`\n• ${label}`);
@@ -8,7 +9,9 @@ function runCommand(command, label) {
 try {
   runCommand("prisma generate", "Generating Prisma Client");
 
-  if (!process.env.DATABASE_URL) {
+  const resolvedDatabaseUrl = ensureDatabaseUrl();
+
+  if (!resolvedDatabaseUrl) {
     console.warn("\n⚠️  Skipping Prisma migrations and seed because DATABASE_URL is not set.");
     process.exit(0);
   }
