@@ -14,8 +14,18 @@ try {
 
   runCommand("prisma generate", "Generating Prisma Client");
 
+  const isPooledConnection =
+    resolvedDatabaseUrl && process.env.POSTGRES_URL === resolvedDatabaseUrl;
+
   if (!resolvedDatabaseUrl) {
     console.warn("\n⚠️  Skipping Prisma migrations and seed because DATABASE_URL is not set.");
+    process.exit(0);
+  }
+
+  if (isPooledConnection) {
+    console.warn(
+      "\n⚠️  Skipping Prisma migrations and seed because only a pooled DATABASE_URL is available."
+    );
     process.exit(0);
   }
 
