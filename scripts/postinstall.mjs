@@ -1,5 +1,8 @@
 import { execSync } from "node:child_process";
-import { ensureDatabaseUrl } from "../lib/ensureDatabaseUrl.js";
+import {
+  ensureDatabaseUrl,
+  isLikelyPooledDatabaseUrl
+} from "../lib/ensureDatabaseUrl.js";
 
 function runCommand(command, label) {
   console.log(`\n• ${label}`);
@@ -7,12 +10,24 @@ function runCommand(command, label) {
 }
 
 try {
+  const resolvedDatabaseUrl = ensureDatabaseUrl({
+    preferDirectConnection: true,
+    setShadowDatabaseUrl: true
+  });
+
   runCommand("prisma generate", "Generating Prisma Client");
 
-  const resolvedDatabaseUrl = ensureDatabaseUrl();
+  const isPooledConnection = isLikelyPooledDatabaseUrl(resolvedDatabaseUrl);
 
   if (!resolvedDatabaseUrl) {
     console.warn("\n⚠️  Skipping Prisma migrations and seed because DATABASE_URL is not set.");
+    process.exit(0);
+  }
+
+  if (isPooledConnection) {
+    console.warn(
+      "\n⚠️  Skipping Prisma migrations and seed because only a pooled DATABASE_URL is available."
+    );
     process.exit(0);
   }
 
